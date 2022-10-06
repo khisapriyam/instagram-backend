@@ -172,3 +172,50 @@ export const getAllUser = async (req, res, next) => {
         console.log(error);  
     }
 }
+
+
+/**
+ * @access public
+ * @route /api/me
+ * @method GET
+ */
+export const getLoggedInUser = async ( req, res, next ) => {
+
+    try {
+
+        //get token
+        const bearer_token = req.headers.authorization;
+
+        let token = '';
+
+        if( bearer_token ){
+            token = bearer_token.split(' ')[1];
+            
+            //get token user
+            const logged_in_user = jwt.verify(token, process.env.JWT_SECRET);
+
+            //user check
+            if( !logged_in_user ){
+                next(createError(400, 'Invalid token'))
+            }
+
+            //user check
+            if( logged_in_user ){
+
+                const user = await User.findById(logged_in_user.id);
+
+                res.status(200).json(user);
+            }
+        }
+
+        //check token exists
+        if( !bearer_token  ){
+            next(createError(404, 'Token not found'))
+        }
+
+    } catch (error) {
+        next(error)
+        
+    }
+
+}

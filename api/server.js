@@ -6,7 +6,7 @@ import userRoute from './routes/user.js';
 import mongoDBConnect from './config/db.js';
 import errorHandler from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
-
+import cors from 'cors'
 
 
 //init express
@@ -14,11 +14,11 @@ const app = express();
 dotenv.config()
 
 
-
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));
 app.use(cookieParser());
+app.use(cors());
 
 //init env variable
 const PORT = process.env.SERVER_PORT || 5000;
